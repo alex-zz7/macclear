@@ -1,0 +1,79 @@
+name: XieJing
+options:
+  bundleIdPrefix: app.xiejing
+  deploymentTarget:
+    macOS: "15.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MACOSX_DEPLOYMENT_TARGET: "15.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGNING_ALLOWED: YES
+targets:
+  XieJingCore:
+    type: library.static
+    platform: macOS
+    sources:
+      - path: XieJingCore
+    dependencies:
+      - sdk: CoreServices.framework
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.xiejing.core
+        PRODUCT_MODULE_NAME: XieJingCore
+        DEFINES_MODULE: YES
+        GENERATE_INFOPLIST_FILE: YES
+        SKIP_INSTALL: YES
+  XieJing:
+    type: application
+    platform: macOS
+    sources:
+      - path: XieJing
+    dependencies:
+      - target: XieJingCore
+      - sdk: CoreServices.framework
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.xiejing.mac
+        PRODUCT_NAME: 卸净
+        PRODUCT_MODULE_NAME: XieJing
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: 卸净
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.utilities
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        CODE_SIGN_ENTITLEMENTS: XieJing/XieJing.entitlements
+        CODE_SIGN_STYLE: Manual
+        ENABLE_APP_SANDBOX: NO
+        ENABLE_HARDENED_RUNTIME: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: "1.0"
+  XieJingTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: XieJingTests
+    dependencies:
+      - target: XieJingCore
+      - sdk: CoreServices.framework
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: app.xiejing.tests
+schemes:
+  XieJing:
+    build:
+      targets:
+        XieJing: all
+        XieJingCore: all
+        XieJingTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - name: XieJingTests
