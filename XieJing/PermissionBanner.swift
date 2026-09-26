@@ -11,7 +11,7 @@ struct PermissionBanner: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("完全磁盘访问权限未开启")
                     .font(.headline)
-                Text("没有这项权限时，其他应用的容器、组容器和部分系统目录里的残留可能扫不出来。文件仍然只会移到废纸篓。")
+                Text("没有这项权限时，其他应用的容器、组容器和部分系统目录里的残留可能扫不出来。如果刚刚打开了开关，退出 macclear 再打开一次才会生效。")
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)

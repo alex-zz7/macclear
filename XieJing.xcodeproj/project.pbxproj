@@ -67,6 +67,7 @@
 		DA822F6D122A4FDE34F67659 /* XieJingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E991CBEF15C9AC73768EF35 /* XieJingApp.swift */; };
 		DDD77F4AC23151314B0E8A8A /* ItemDeduper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 626B88DA5C02596F6A298E27 /* ItemDeduper.swift */; };
 		DF7911FF13718D8DDB9493C1 /* BundleInfoReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C89030617DBED774A35F59C /* BundleInfoReader.swift */; };
+		E0B41075611EF66CFF1D00E3 /* FullDiskAccessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FFEC33EF14A9F2738337438 /* FullDiskAccessTests.swift */; };
 		E111D8106C807E3163580F3A /* ProtectionNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB42E3CBAFE9FABF386A03ED /* ProtectionNotice.swift */; };
 		E154310CEA98E876FCA12D0F /* LeftoverFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A553848C0B19974D2444A4B5 /* LeftoverFinder.swift */; };
 		E559F45A8D802E793C8A5EBD /* PathPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB42818477A42EF7CAF3C703 /* PathPolicy.swift */; };
@@ -109,6 +110,7 @@
 		2BB84BDCA7B408BC060D7245 /* InstalledApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledApp.swift; sourceTree = "<group>"; };
 		2C388F7F5171A0640ED8DCF6 /* DirectorySize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectorySize.swift; sourceTree = "<group>"; };
 		2E5F7FFBA61C00D83C6692F7 /* LibraryAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryAlert.swift; sourceTree = "<group>"; };
+		2FFEC33EF14A9F2738337438 /* FullDiskAccessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullDiskAccessTests.swift; sourceTree = "<group>"; };
 		3685929763D4A11D6619ED88 /* RelatedItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedItemRow.swift; sourceTree = "<group>"; };
 		385CDD864655ED9B64104C31 /* PermissionBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionBanner.swift; sourceTree = "<group>"; };
 		393A4364DAAA2BE0D54B16ED /* XieJing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XieJing.entitlements; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 				2032D967FC745A8D1A910555 /* BundleIDMatcherTests.swift */,
 				B9CF0C6454D90DA5B122C6AD /* CaskLocationTests.swift */,
 				08170F09E885730A3F2CD3EE /* DockCleanerTests.swift */,
+				2FFEC33EF14A9F2738337438 /* FullDiskAccessTests.swift */,
 				CC69B22AB750729E2516CEF3 /* ItemDeduperTests.swift */,
 				E65DCE8A9749DB76C36A927E /* LeftoverFinderTests.swift */,
 				F846932D07D4FE977A86461F /* NameMatcherTests.swift */,
@@ -448,6 +451,7 @@
 				ED941F481C64121CA57913B3 /* BundleIDMatcherTests.swift in Sources */,
 				0DAE0A05D4BCABCB370B42E0 /* CaskLocationTests.swift in Sources */,
 				95286FC2EE78F7CA49A7F643 /* DockCleanerTests.swift in Sources */,
+				E0B41075611EF66CFF1D00E3 /* FullDiskAccessTests.swift in Sources */,
 				2481D51ECA721BD09E16956D /* ItemDeduperTests.swift in Sources */,
 				795B87D083582ECBA4C6A11A /* LeftoverFinderTests.swift in Sources */,
 				C401EF0399DEDA612E869B6D /* NameMatcherTests.swift in Sources */,
