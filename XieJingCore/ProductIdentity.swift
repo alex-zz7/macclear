@@ -1,5 +1,5 @@
 import Foundation
 
 public enum ProductIdentity {
-    public static let bundleIdentifier = "app.xiejing.mac"
+    public static let bundleIdentifier = "app.macclear.mac"
 }

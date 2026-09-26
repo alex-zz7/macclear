@@ -38,7 +38,7 @@ struct AppDetailView: View {
             .navigationTitle(app.name)
         } else {
             EmptyDetailView()
-                .navigationTitle("卸净")
+                .navigationTitle("macclear")
         }
     }
 }

@@ -1,6 +1,6 @@
 name: XieJing
 options:
-  bundleIdPrefix: app.xiejing
+  bundleIdPrefix: app.macclear
   deploymentTarget:
     macOS: "15.0"
   createIntermediateGroups: true
@@ -23,7 +23,7 @@ targets:
       - sdk: CoreServices.framework
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: app.xiejing.core
+        PRODUCT_BUNDLE_IDENTIFIER: app.macclear.core
         PRODUCT_MODULE_NAME: XieJingCore
         DEFINES_MODULE: YES
         GENERATE_INFOPLIST_FILE: YES
@@ -38,11 +38,11 @@ targets:
       - sdk: CoreServices.framework
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: app.xiejing.mac
-        PRODUCT_NAME: 卸净
+        PRODUCT_BUNDLE_IDENTIFIER: app.macclear.mac
+        PRODUCT_NAME: macclear
         PRODUCT_MODULE_NAME: XieJing
         GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: 卸净
+        INFOPLIST_KEY_CFBundleDisplayName: macclear
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.utilities
         SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
         CODE_SIGN_ENTITLEMENTS: XieJing/XieJing.entitlements
@@ -63,7 +63,7 @@ targets:
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
-        PRODUCT_BUNDLE_IDENTIFIER: app.xiejing.tests
+        PRODUCT_BUNDLE_IDENTIFIER: app.macclear.tests
 schemes:
   XieJing:
     build:

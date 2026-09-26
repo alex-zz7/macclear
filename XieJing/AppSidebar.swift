@@ -14,7 +14,7 @@ struct AppSidebar: View {
                 ContentUnavailableView(
                     "没有找到应用",
                     systemImage: "magnifyingglass",
-                    description: Text("卸净查看了“应用程序”和“系统应用程序”文件夹。")
+                    description: Text("macclear 查看了“应用程序”和“系统应用程序”文件夹。")
                 )
             } else if library.filteredApps.isEmpty {
                 ContentUnavailableView.search
@@ -38,7 +38,7 @@ struct AppSidebar: View {
                 .listStyle(.sidebar)
             }
         }
-        .navigationTitle("卸净")
+        .navigationTitle("macclear")
         .navigationSubtitle("\(library.uninstallableCount) 个可卸载")
         .searchable(text: $library.query, prompt: "搜索名称或 Bundle ID")
         .toolbar {

@@ -590,7 +590,7 @@
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "卸净";
+				INFOPLIST_KEY_CFBundleDisplayName = macclear;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -601,9 +601,9 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = app.xiejing.mac;
+				PRODUCT_BUNDLE_IDENTIFIER = app.macclear.mac;
 				PRODUCT_MODULE_NAME = XieJing;
-				PRODUCT_NAME = "卸净";
+				PRODUCT_NAME = macclear;
 				SDKROOT = macosx;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 			};
@@ -624,7 +624,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = app.xiejing.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = app.macclear.tests;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -644,7 +644,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = app.xiejing.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = app.macclear.tests;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -659,7 +659,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = app.xiejing.core;
+				PRODUCT_BUNDLE_IDENTIFIER = app.macclear.core;
 				PRODUCT_MODULE_NAME = XieJingCore;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -743,7 +743,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = app.xiejing.core;
+				PRODUCT_BUNDLE_IDENTIFIER = app.macclear.core;
 				PRODUCT_MODULE_NAME = XieJingCore;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -761,7 +761,7 @@
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "卸净";
+				INFOPLIST_KEY_CFBundleDisplayName = macclear;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -772,9 +772,9 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = app.xiejing.mac;
+				PRODUCT_BUNDLE_IDENTIFIER = app.macclear.mac;
 				PRODUCT_MODULE_NAME = XieJing;
-				PRODUCT_NAME = "卸净";
+				PRODUCT_NAME = macclear;
 				SDKROOT = macosx;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 			};
