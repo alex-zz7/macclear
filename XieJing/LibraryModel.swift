@@ -10,7 +10,8 @@ final class LibraryModel {
     var query = ""
     var sort: AppSort = .name
     private(set) var items: [RelatedItem] = []
-    var checkedIDs: Set<RelatedItem.ID> = []
+    private(set) var dockShortcuts: [DockShortcut] = []
+    var checkedIDs: Set<String> = []
     private(set) var detailPhase: LoadPhase = .idle
     private(set) var didTruncate = false
     private(set) var hasFullDiskAccess = true
@@ -78,19 +79,27 @@ final class LibraryModel {
     var canUninstall: Bool {
         guard let app = selectedApp, !app.isProtected else { return false }
         guard detailPhase == .ready, !isUninstalling else { return false }
-        return !checkedItems.isEmpty
+        return !checkedItems.isEmpty || !checkedDockShortcuts.isEmpty
+    }
+
+    var checkedDockShortcuts: [DockShortcut] {
+        dockShortcuts.filter { checkedIDs.contains($0.id) }
     }
 
     var statusLine: String {
         if detailPhase == .loading { return "正在查找残留文件" }
         let selected = checkedItems
+        let docks = checkedDockShortcuts
         let size = selected.compactMap(\.byteCount).reduce(0, +)
-        var text = "已选 \(selected.count) 项"
+        var text = "已选 \(selected.count + docks.count) 项"
         if !selected.isEmpty {
             text += "，约 \(Format.bytes(size))"
             if selected.contains(where: { $0.byteCount == nil }) {
                 text += "（有的文件没能算出大小）"
             }
+        }
+        if !docks.isEmpty {
+            text += "，含 \(docks.count) 个 Dock 图标"
         }
         let heldBack = items.filter { $0.confidence == .likely && !checkedIDs.contains($0.id) }.count
         if heldBack > 0 {
@@ -102,9 +111,15 @@ final class LibraryModel {
     var confirmationMessage: String {
         guard let app = selectedApp else { return "" }
         let selected = checkedItems
+        let docks = checkedDockShortcuts
         let likely = selected.filter { $0.confidence == .likely }.count
         let size = selected.compactMap(\.byteCount).reduce(0, +)
-        var text = "将把 \(selected.count) 项移到废纸篓，大约 \(Format.bytes(size))。可以从废纸篓恢复。"
+        var text = selected.isEmpty
+            ? ""
+            : "将把 \(selected.count) 项移到废纸篓，大约 \(Format.bytes(size))。可以从废纸篓恢复。"
+        if !docks.isEmpty {
+            text += "程序坞里 \(docks.count) 个对应图标会去掉，程序坞会重新打开一下。"
+        }
         if likely > 0 {
             text += " 其中 \(likely) 项只是名称相同，请确认它们属于「\(app.name)」。"
         }
@@ -167,6 +182,7 @@ final class LibraryModel {
         let token = detailToken
         guard let app = selectedApp else {
             items = []
+            dockShortcuts = []
             checkedIDs = []
             didTruncate = false
             detailPhase = .idle
@@ -174,6 +190,7 @@ final class LibraryModel {
         }
         if app.isProtected {
             items = []
+            dockShortcuts = []
             checkedIDs = []
             didTruncate = false
             detailPhase = .ready
@@ -181,20 +198,24 @@ final class LibraryModel {
         }
         detailPhase = .loading
         items = []
+        dockShortcuts = []
         checkedIDs = []
         didTruncate = false
         detailTask = Task {
             let report = await finder.find(for: app)
             guard !Task.isCancelled, token == detailToken else { return }
             items = report.items
+            dockShortcuts = report.dockShortcuts
             didTruncate = report.didTruncate
-            checkedIDs = Set(report.items.filter { $0.confidence == .certain }.map(\.id))
+            var selected = Set(report.items.filter { $0.confidence == .certain }.map(\.id))
+            selected.formUnion(report.dockShortcuts.map(\.id))
+            checkedIDs = selected
             detailPhase = .ready
             AppLog.library.info("Found \(report.items.count, privacy: .public) leftovers")
         }
     }
 
-    func setChecked(_ id: RelatedItem.ID, _ isChecked: Bool) {
+    func setChecked(_ id: String, _ isChecked: Bool) {
         if isChecked {
             checkedIDs.insert(id)
         } else {
@@ -203,11 +224,13 @@ final class LibraryModel {
     }
 
     func selectCertain() {
-        checkedIDs = Set(items.filter { $0.confidence == .certain }.map(\.id))
+        var selected = Set(items.filter { $0.confidence == .certain }.map(\.id))
+        selected.formUnion(dockShortcuts.map(\.id))
+        checkedIDs = selected
     }
 
     func selectAll() {
-        checkedIDs = Set(items.map(\.id))
+        checkedIDs = Set(items.map(\.id)).union(dockShortcuts.map(\.id))
     }
 
     func open(_ app: InstalledApp) {
@@ -236,13 +259,18 @@ final class LibraryModel {
     func uninstallSelected() async {
         guard let app = selectedApp, !app.isProtected, canUninstall else { return }
         let chosen = checkedItems
+        let chosenDocks = checkedDockShortcuts
         isUninstalling = true
         defer { isUninstalling = false }
         await quit(app)
         refreshRunning()
         let report: TrashReport
         do {
-            report = try TrashUninstaller(policy: .standard(home: locations.home)).trash(chosen.map(\.url))
+            if chosen.isEmpty {
+                report = TrashReport(moved: [], failures: [])
+            } else {
+                report = try TrashUninstaller(policy: .standard(home: locations.home)).trash(chosen.map(\.url))
+            }
         } catch let error as TrashError {
             switch error {
             case .blocked(let url):
@@ -258,20 +286,25 @@ final class LibraryModel {
             return
         }
 
+        let dockNote = removeDockShortcuts(chosenDocks)
         if report.failures.isEmpty {
+            var message = report.moved.isEmpty ? "" : "移走了 \(report.moved.count) 项。打开废纸篓可以恢复。"
+            if !dockNote.isEmpty {
+                message = message.isEmpty ? dockNote : message + dockNote
+            }
             notice = LibraryAlert(
-                title: "已移到废纸篓",
-                message: "移走了 \(report.moved.count) 项。打开废纸篓可以恢复。"
+                title: report.moved.isEmpty ? "已清理程序坞" : "已移到废纸篓",
+                message: message
             )
         } else if report.moved.isEmpty {
             notice = LibraryAlert(
                 title: "没能移走",
-                message: failureText(report.failures) + " 如果系统弹出了权限请求，允许之后再试一次。"
+                message: failureText(report.failures) + " 如果系统弹出了权限请求，允许之后再试一次。" + dockNote
             )
         } else {
             notice = LibraryAlert(
                 title: "只移走了一部分",
-                message: "已移走 \(report.moved.count) 项，\(report.failures.count) 项失败。\(failureText(report.failures))"
+                message: "已移走 \(report.moved.count) 项，\(report.failures.count) 项失败。\(failureText(report.failures))" + dockNote
             )
         }
 
@@ -305,6 +338,20 @@ final class LibraryModel {
             _ = running.forceTerminate()
         }
         try? await Task.sleep(for: .milliseconds(300))
+    }
+
+    private func removeDockShortcuts(_ shortcuts: [DockShortcut]) -> String {
+        guard !shortcuts.isEmpty else { return "" }
+        do {
+            let removed = try DockCleaner.remove(
+                Set(shortcuts.map(\.id)),
+                plistURL: DockCleaner.plistURL(home: locations.home)
+            )
+            guard removed > 0 else { return "" }
+            return "已去掉 \(removed) 个 Dock 图标。"
+        } catch {
+            return "Dock 图标没能去掉：\(error.localizedDescription)"
+        }
     }
 
     private func failureText(_ failures: [TrashFailure]) -> String {

@@ -11,6 +11,19 @@ struct RelatedItemList: View {
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }
+            if !library.dockShortcuts.isEmpty {
+                Section {
+                    ForEach(library.dockShortcuts) { shortcut in
+                        DockShortcutRow(
+                            shortcut: shortcut,
+                            isChecked: library.checkedIDs.contains(shortcut.id),
+                            onToggle: { library.setChecked(shortcut.id, $0) }
+                        )
+                    }
+                } header: {
+                    Label("Dock 快捷方式", systemImage: "dock.rectangle")
+                }
+            }
             ForEach(grouped, id: \.0) { category, rows in
                 Section {
                     ForEach(rows) { item in

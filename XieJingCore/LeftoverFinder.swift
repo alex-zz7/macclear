@@ -50,7 +50,11 @@ public struct LeftoverFinder: Sendable {
             }
             return lhs.url.lastPathComponent.localizedStandardCompare(rhs.url.lastPathComponent) == .orderedAscending
         }
-        return LeftoverReport(items: sorted, didTruncate: didTruncate)
+        let dockShortcuts = DockCleaner.shortcuts(
+            matching: app,
+            plistURL: DockCleaner.plistURL(home: locations.home)
+        )
+        return LeftoverReport(items: sorted, dockShortcuts: dockShortcuts, didTruncate: didTruncate)
     }
 
     private func appBundleItem(_ app: InstalledApp) -> RelatedItem {

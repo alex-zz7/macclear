@@ -17,10 +17,10 @@ struct AppDetailView: View {
                 if app.isProtected {
                     ProtectionNotice(app: app)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if library.detailPhase == .loading, library.items.isEmpty {
+                } else if library.detailPhase == .loading, library.items.isEmpty, library.dockShortcuts.isEmpty {
                     ProgressView("正在查找残留文件")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if library.items.isEmpty {
+                } else if library.items.isEmpty, library.dockShortcuts.isEmpty {
                     ContentUnavailableView(
                         "没有找到额外文件",
                         systemImage: "checkmark.circle",
