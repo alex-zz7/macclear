@@ -9,6 +9,7 @@ final class LibraryModel {
     var selection: InstalledApp.ID?
     var query = ""
     var sort: AppSort = .name
+    var categoryFilter = "all"
     private(set) var items: [RelatedItem] = []
     private(set) var dockShortcuts: [DockShortcut] = []
     var checkedIDs: Set<String> = []
@@ -67,6 +68,42 @@ final class LibraryModel {
         filteredApps.filter(\.isProtected)
     }
 
+    var runningApps: [InstalledApp] {
+        filteredApps.filter { isRunning($0) }
+    }
+
+    var storeGroupsInUse: [StoreCategoryGroup] {
+        let present = Set(apps.filter { !$0.isProtected }.map { StoreCategoryGroup.group(for: $0.storeCategory) })
+        return StoreCategoryGroup.allCases.filter { present.contains($0) }
+    }
+
+    var sidebarSections: [AppListSection] {
+        switch categoryFilter {
+        case "uninstallable":
+            return [AppListSection(title: "可卸载 \(uninstallableApps.count)", apps: uninstallableApps)]
+        case "system":
+            return [AppListSection(title: "系统应用 \(protectedApps.count)", apps: protectedApps)]
+        case "running":
+            return [AppListSection(title: "正在运行 \(runningApps.count)", apps: runningApps)]
+        case "all":
+            var sections = [AppListSection(title: "可卸载 \(uninstallableApps.count)", apps: uninstallableApps)]
+            if !protectedApps.isEmpty {
+                sections.append(AppListSection(title: "系统应用 \(protectedApps.count)", apps: protectedApps))
+            }
+            return sections
+        default:
+            let matched = uninstallableApps.filter {
+                StoreCategoryGroup.group(for: $0.storeCategory).rawValue == categoryFilter
+            }
+            let title = StoreCategoryGroup(rawValue: categoryFilter)?.title ?? "分类"
+            return [AppListSection(title: "\(title) \(matched.count)", apps: matched)]
+        }
+    }
+
+    var sidebarIsEmpty: Bool {
+        sidebarSections.allSatisfy { $0.apps.isEmpty }
+    }
+
     var selectedApp: InstalledApp? {
         guard let selection else { return nil }
         return apps.first { $0.id == selection }
@@ -74,6 +111,14 @@ final class LibraryModel {
 
     var checkedItems: [RelatedItem] {
         items.filter { checkedIDs.contains($0.id) }
+    }
+
+    var uninstallButtonTitle: String {
+        let files = checkedItems.count
+        let docks = checkedDockShortcuts.count
+        if files == 0, docks > 0 { return "移除快捷方式" }
+        if docks > 0 { return "删除所选" }
+        return "移到废纸篓"
     }
 
     var canUninstall: Bool {
@@ -221,6 +266,22 @@ final class LibraryModel {
         } else {
             checkedIDs.remove(id)
         }
+    }
+
+    func isFullyChecked(_ ids: [String]) -> Bool {
+        !ids.isEmpty && ids.allSatisfy { checkedIDs.contains($0) }
+    }
+
+    func setChecked(_ ids: [String], _ isChecked: Bool) {
+        if isChecked {
+            checkedIDs.formUnion(ids)
+        } else {
+            checkedIDs.subtract(ids)
+        }
+    }
+
+    func itemIDs(in category: ItemCategory) -> [String] {
+        items.filter { $0.category == category }.map(\.id)
     }
 
     func selectCertain() {

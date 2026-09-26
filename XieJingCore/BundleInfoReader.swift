@@ -14,7 +14,8 @@ public enum BundleInfoReader {
             bundleName: bundleName,
             bundleIdentifier: bundleIdentifier,
             version: version,
-            nestedIdentifiers: nestedIdentifiers(in: root)
+            nestedIdentifiers: nestedIdentifiers(in: root),
+            storeCategory: string(plist?["LSApplicationCategoryType"])
         )
     }
 

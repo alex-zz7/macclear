@@ -6,7 +6,10 @@ struct AppSidebar: View {
 
     var body: some View {
         @Bindable var library = library
-        Group {
+        VStack(spacing: 0) {
+            CategoryFilterBar()
+            Divider()
+            Group {
             if library.phase == .loading, library.apps.isEmpty {
                 ProgressView("正在扫描应用")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -16,30 +19,34 @@ struct AppSidebar: View {
                     systemImage: "magnifyingglass",
                     description: Text("macclear 查看了“应用程序”和“系统应用程序”文件夹。")
                 )
-            } else if library.filteredApps.isEmpty {
+            } else if library.sidebarIsEmpty, !library.query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 ContentUnavailableView.search
+            } else if library.sidebarIsEmpty {
+                ContentUnavailableView(
+                    "这个分类里没有应用",
+                    systemImage: "square.grid.2x2",
+                    description: Text("系统应用不能卸载，已单独放在「系统应用」里。")
+                )
             } else {
                 List(selection: $library.selection) {
-                    Section("可卸载 \(library.uninstallableApps.count)") {
-                        ForEach(library.uninstallableApps) { app in
-                            AppRow(app: app, isRunning: library.isRunning(app))
-                                .tag(app.id)
-                        }
-                    }
-                    if !library.protectedApps.isEmpty {
-                        Section("系统应用 \(library.protectedApps.count)") {
-                            ForEach(library.protectedApps) { app in
-                                AppRow(app: app, isRunning: library.isRunning(app))
-                                    .tag(app.id)
+                    ForEach(library.sidebarSections) { section in
+                        if !section.apps.isEmpty {
+                            Section(section.title) {
+                                ForEach(section.apps) { app in
+                                    AppRow(app: app, isRunning: library.isRunning(app))
+                                        .tag(app.id)
+                                }
                             }
                         }
                     }
                 }
                 .listStyle(.sidebar)
             }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .navigationTitle("macclear")
-        .navigationSubtitle("\(library.uninstallableCount) 个可卸载")
+        .navigationSubtitle(library.categoryFilter == "system" ? "\(library.protectedApps.count) 个系统应用" : "\(library.uninstallableCount) 个可卸载")
         .searchable(text: $library.query, prompt: "搜索名称或 Bundle ID")
         .toolbar {
             ToolbarItem {

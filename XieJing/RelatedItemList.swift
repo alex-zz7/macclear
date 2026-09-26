@@ -21,7 +21,13 @@ struct RelatedItemList: View {
                         )
                     }
                 } header: {
-                    Label("Dock 快捷方式", systemImage: "dock.rectangle")
+                    Toggle(isOn: Binding(
+                        get: { library.isFullyChecked(library.dockShortcuts.map(\.id)) },
+                        set: { library.setChecked(library.dockShortcuts.map(\.id), $0) }
+                    )) {
+                        Label("Dock 快捷方式", systemImage: "dock.rectangle")
+                    }
+                    .toggleStyle(.checkbox)
                 }
             }
             ForEach(grouped, id: \.0) { category, rows in
@@ -35,7 +41,13 @@ struct RelatedItemList: View {
                         )
                     }
                 } header: {
-                    Label(category.title, systemImage: category.symbolName)
+                    Toggle(isOn: Binding(
+                        get: { library.isFullyChecked(library.itemIDs(in: category)) },
+                        set: { library.setChecked(library.itemIDs(in: category), $0) }
+                    )) {
+                        Label(category.title, systemImage: category.symbolName)
+                    }
+                    .toggleStyle(.checkbox)
                 }
             }
         }

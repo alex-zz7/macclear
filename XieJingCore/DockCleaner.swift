@@ -43,6 +43,8 @@ public enum DockCleaner {
         let data = try PropertyListSerialization.data(fromPropertyList: plist, format: .binary, options: 0)
         try data.write(to: plistURL, options: .atomic)
         if restartDock {
+            // 直接改文件会被偏好设置缓存盖掉，必须写进 com.apple.dock 再重启程序坞。
+            importDockPreferences(from: plistURL)
             relaunchDock()
         }
         return removed
@@ -105,10 +107,19 @@ public enum DockCleaner {
         return path
     }
 
+    private static func importDockPreferences(from plistURL: URL) {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/defaults")
+        process.arguments = ["import", "com.apple.dock", plistURL.path]
+        try? process.run()
+        process.waitUntilExit()
+    }
+
     private static func relaunchDock() {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/killall")
         process.arguments = ["Dock"]
         try? process.run()
+        process.waitUntilExit()
     }
 }

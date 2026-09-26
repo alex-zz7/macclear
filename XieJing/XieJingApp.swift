@@ -6,7 +6,7 @@ struct XieJingApp: App {
         WindowGroup {
             ContentView()
         }
-        .defaultSize(width: 1080, height: 720)
+        .defaultSize(width: 1180, height: 820)
         .windowToolbarStyle(.unified(showsTitle: true))
         .commands {
             CommandGroup(replacing: .newItem) {}

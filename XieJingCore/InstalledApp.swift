@@ -10,6 +10,7 @@ public struct InstalledApp: Identifiable, Hashable, Sendable {
     public var matchNames: [String]
     public var byteCount: Int64?
     public var protection: Protection?
+    public var storeCategory: String?
 
     public init(
         url: URL,
@@ -20,7 +21,8 @@ public struct InstalledApp: Identifiable, Hashable, Sendable {
         identifiers: [String],
         matchNames: [String],
         byteCount: Int64?,
-        protection: Protection?
+        protection: Protection?,
+        storeCategory: String? = nil
     ) {
         self.url = url
         self.name = name
@@ -31,6 +33,7 @@ public struct InstalledApp: Identifiable, Hashable, Sendable {
         self.matchNames = matchNames
         self.byteCount = byteCount
         self.protection = protection
+        self.storeCategory = storeCategory
     }
 
     public var id: String { url.standardizedFileURL.path }
@@ -53,7 +56,8 @@ public struct InstalledApp: Identifiable, Hashable, Sendable {
             identifiers: uniqueIdentifiers(rawIDs),
             matchNames: matchNames(displayName: info.displayName, bundleName: info.bundleName, fileName: fileName),
             byteCount: SpotlightSize.byteCount(of: url),
-            protection: Protection.decide(url: url, bundleIdentifier: info.bundleIdentifier)
+            protection: Protection.decide(url: url, bundleIdentifier: info.bundleIdentifier),
+            storeCategory: info.storeCategory
         )
     }
 
